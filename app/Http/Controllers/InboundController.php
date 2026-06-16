@@ -6,9 +6,61 @@ use App\Models\Item;
 use App\Models\ItemConversion;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf; // [PEMBARUAN] Import Facade PDF dari DomPDF
 
 class InboundController extends Controller
 {
+    /**
+     * [PEMBARUAN] Menampilkan daftar riwayat barang masuk (Inbound) beserta filter tanggal
+     */
+    public function index(Request $request)
+    {
+        // Inisialisasi query untuk transaksi tipe 'in' (masuk) beserta relasi itemnya
+        $query = Transaction::with('item')->where('type', 'in');
+
+        // [PEMBARUAN] Fitur Filter Tanggal Masuk
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('tanggal_fisik', [$request->start_date, $request->end_date]);
+        }
+
+        // Eksekusi query dan urutkan dari yang terbaru
+        $inbounds = $query->orderBy('tanggal_fisik', 'desc')
+                          ->orderBy('created_at', 'desc')
+                          ->get(); // Gunakan ->paginate(10) alih-alih ->get() jika data sudah sangat banyak
+
+        return view('inbounds.index', compact('inbounds'));
+    }
+
+    /**
+     * [PEMBARUAN] Fungsi untuk mengekspor data yang sudah difilter ke format PDF
+     */
+    public function exportPdf(Request $request)
+    {
+        $query = Transaction::with('item')->where('type', 'in');
+
+        // Terapkan filter yang sama jika ada request tanggal dari user
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('tanggal_fisik', [$request->start_date, $request->end_date]);
+        }
+
+        $inbounds = $query->orderBy('tanggal_fisik', 'desc')
+                          ->orderBy('created_at', 'desc')
+                          ->get();
+
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        // Load view khusus PDF dan set ukuran kertas A4 Portrait
+        $pdf = Pdf::loadView('inbounds.pdf', compact('inbounds', 'startDate', 'endDate'))
+                  ->setPaper('a4', 'portrait');
+
+        // Penamaan file dinamis berdasarkan rentang tanggal
+        $namaFile = 'Laporan_Barang_Masuk_' . ($startDate && $endDate ? $startDate . '_sd_' . $endDate : date('Y-m-d')) . '.pdf';
+        
+        // Unduh file PDF
+        return $pdf->download($namaFile);
+    }
+
     public function create()
     {
         // Ambil semua item beserta aturan konversinya untuk dikirim ke Javascript
@@ -51,6 +103,7 @@ class InboundController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->back()->with('success', 'Barang masuk berhasil dicatat! Total ' . $qty_base . ' satuan dasar telah ditambahkan.');
+        // [PERBAIKAN]: Redirect ke halaman index barang masuk agar notifikasi muncul di tabel riwayat
+        return redirect()->route('inbounds.index')->with('success', 'Barang masuk berhasil dicatat! Total ' . $qty_base . ' satuan dasar telah ditambahkan.');
     }
 }

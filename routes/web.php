@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController; // [PEMBARUAN] Import DashboardController
+use App\Http\Controllers\DashboardController; 
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\InboundController;
 use App\Http\Controllers\OutboundController; 
@@ -39,7 +39,7 @@ Route::middleware('guest')->group(function () {
  */
 Route::middleware('auth')->group(function () { 
     
-    // [PEMBARUAN] Halaman Dashboard Utama kini menggunakan Controller agar bisa mengirim data dinamis
+    // Halaman Dashboard Utama kini menggunakan Controller agar bisa mengirim data dinamis
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard'); 
 
     // Rute POST untuk memproses fitur logout
@@ -72,6 +72,12 @@ Route::middleware('auth')->group(function () {
     // FITUR BARANG MASUK (INBOUND TRANSACTIONS)
     // ==========================================================
     
+    // Menampilkan daftar riwayat barang masuk (Inbound)
+    Route::get('/inbounds', [InboundController::class, 'index'])->name('inbounds.index');
+    
+    // Rute untuk mengunduh laporan barang masuk dalam format PDF
+    Route::get('/inbounds/export-pdf', [InboundController::class, 'exportPdf'])->name('inbounds.export_pdf');
+    
     // Menampilkan form pencatatan barang masuk
     Route::get('/inbounds/create', [InboundController::class, 'create'])->name('inbounds.create'); 
     
@@ -83,6 +89,12 @@ Route::middleware('auth')->group(function () {
     // FITUR BARANG KELUAR (OUTBOUND TRANSACTIONS)
     // ==========================================================
     
+    // Menampilkan daftar riwayat barang keluar (Outbound)
+    Route::get('/outbounds', [OutboundController::class, 'index'])->name('outbounds.index');
+
+    // Rute untuk mengunduh laporan barang keluar dalam format PDF
+    Route::get('/outbounds/export-pdf', [OutboundController::class, 'exportPdf'])->name('outbounds.export_pdf');
+
     // Menampilkan form pencatatan barang keluar
     Route::get('/outbounds/create', [OutboundController::class, 'create'])->name('outbounds.create'); 
     
@@ -99,8 +111,5 @@ Route::middleware('auth')->group(function () {
 
     // Rute untuk memproses dan mengunduh data stok menjadi file Excel
     Route::get('/reports/stock/export-excel', [ReportController::class, 'exportExcel'])->name('reports.export_excel');
-
-    // Menampilkan Laporan Pergerakan Barang (Kartu Stok)
-    Route::get('/reports/movement', [ReportController::class, 'movement'])->name('reports.movement');
 
 });

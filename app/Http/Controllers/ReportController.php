@@ -39,6 +39,7 @@ class ReportController extends Controller
 
     /**
      * Menampilkan Laporan Pergerakan Barang (Kartu Stok)
+     * Menampilkan seluruh riwayat transaksi (masuk & keluar) tanpa filter tipe
      */
     public function movement(Request $request)
     {
@@ -50,11 +51,11 @@ class ReportController extends Controller
         if ($request->has('item_id') && $request->item_id != '') {
             $selectedItem = Item::with('conversions')->find($request->item_id);
             
-            // Ambil riwayat urut dari yang terbaru
+            // Ambil semua riwayat transaksi untuk item tersebut urut dari yang terbaru
             $transactions = Transaction::where('item_id', $request->item_id)
-                                       ->orderBy('tanggal_fisik', 'desc')
-                                       ->orderBy('created_at', 'desc')
-                                       ->get();
+                                  ->orderBy('tanggal_fisik', 'desc')
+                                  ->orderBy('created_at', 'desc')
+                                  ->get();
         }
 
         return view('reports.movement', compact('items', 'transactions', 'selectedItem'));
@@ -65,7 +66,7 @@ class ReportController extends Controller
      */
     public function exportExcel()
     {
-        // Membuat nama file otomatis berdasarkan tanggal hari ini (Contoh: Laporan_Stok_2026-04-30.xlsx)
+        // Membuat nama file otomatis berdasarkan tanggal hari ini (Contoh: Laporan_Stok_2026-06-15.xlsx)
         $namaFile = 'Laporan_Stok_' . date('Y-m-d') . '.xlsx';
         
         // Memanggil library Excel untuk mengunduh menggunakan format dari StockReportExport

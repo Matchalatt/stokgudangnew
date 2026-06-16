@@ -3,138 +3,139 @@
 @section('title', 'Catat Barang Masuk - Sistem Inventaris')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="text-2xl font-semibold text-gray-900">Catat Barang Masuk</h1>
-    <p class="text-sm text-gray-500 mt-1">Formulir untuk mencatat penambahan stok fisik barang ke dalam sistem inventaris.</p>
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="font-weight-bold text-dark mb-1">Catat Barang Masuk</h2>
+        <p class="text-muted mb-0">Formulir untuk mencatat penambahan stok fisik barang ke dalam sistem inventaris.</p>
+    </div>
 </div>
 
-<div class="max-w-4xl bg-white p-6 md:p-8 rounded-xl border border-gray-100 shadow-sm">
-    
-    <form action="{{ route('inbounds.store') }}" method="POST" class="space-y-8">
-        @csrf
-        
-        @if(session('success'))
-            <div class="bg-green-50 text-green-700 p-4 rounded-lg flex items-center border border-green-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200">
-                <div class="flex items-center mb-2">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span class="font-semibold">Terjadi kesalahan input:</span>
-                </div>
-                <ul class="list-disc pl-7 text-sm space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <div>
-            <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2 mb-5">Informasi Transaksi</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="tanggal_fisik" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Tanggal Masuk <span class="text-red-500">*</span>
-                    </label>
-                    <input type="date" id="tanggal_fisik" name="tanggal_fisik" value="{{ old('tanggal_fisik', date('Y-m-d')) }}" required 
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors">
-                </div>
-
-                <div>
-                    <label for="reference" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Referensi / Plat Nomor <span class="text-gray-400 font-normal">(Opsional)</span>
-                    </label>
-                    <input type="text" id="reference" name="reference" value="{{ old('reference') }}" 
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors" 
-                        placeholder="Contoh: B/L No. 12345 / H 6789 SS">
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2 mb-5">Detail Barang</h3>
-            
-            <div class="space-y-6 bg-gray-50 p-5 rounded-xl border border-gray-200">
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
                 
-                <div>
-                    <label for="item_id" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Pilih Barang <span class="text-red-500">*</span>
-                    </label>
-                    <select id="item_id" name="item_id" required 
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white">
-                        <option value="">-- Pilih Master Barang --</option>
-                        @foreach($items as $item)
-                            <option value="{{ $item->id }}" {{ old('item_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->nama }} (Satuan Dasar: {{ $item->base_unit }})
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <form action="{{ route('inbounds.store') }}" method="POST">
+                    @csrf
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="conversion_id" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Satuan / Kemasan <span class="text-red-500">*</span>
-                        </label>
-                        <select id="conversion_id" name="conversion_id" required
-                            class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
-                            <option value="">-- Pilih Barang Terlebih Dahulu --</option>
-                        </select>
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" style="border-radius: 10px;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h6 class="text-danger font-weight-bold mb-2">
+                                <i class="icon-info mr-2"></i> Terjadi kesalahan input:
+                            </h6>
+                            <ul class="mb-0 pl-4 small">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                        <div class="bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 36px; height: 36px;">
+                            <i class="icon-doc" style="font-size: 16px;"></i>
+                        </div>
+                        <h4 class="card-title text-dark font-weight-bold mb-0">Informasi Transaksi</h4>
                     </div>
+                    
+                    <div class="form-row mb-4">
+                        <div class="form-group col-12 mb-3">
+                            <label for="tanggal_fisik" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                Tanggal Masuk <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" id="tanggal_fisik" name="tanggal_fisik" value="{{ old('tanggal_fisik', date('Y-m-d')) }}" required 
+                                class="form-control" style="border-radius: 8px;">
+                        </div>
 
-                    <div>
-                        <label for="qty" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Jumlah (Qty) <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" id="qty" name="qty" value="{{ old('qty') }}" required min="1" step="0.01"
-                            class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white" 
-                            placeholder="0">
-                    </div>
-                </div>
-
-                <div id="kalkulasi_info" class="hidden bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg flex items-start mt-2 shadow-sm">
-                    <svg class="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div>
-                        <span class="text-sm block text-blue-700 mb-1">Total stok yang akan disimpan ke database (Satuan Dasar):</span>
-                        <div class="flex items-baseline">
-                            <span class="font-bold text-2xl text-blue-900" id="preview_total">0</span> 
-                            <span class="font-medium text-blue-800 ml-1.5" id="preview_unit"></span>
+                        <div class="form-group col-12">
+                            <label for="reference" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                Referensi / Plat Nomor <span class="text-muted font-weight-normal" style="font-size: 11px;">(Opsional)</span>
+                            </label>
+                            <input type="text" id="reference" name="reference" value="{{ old('reference') }}" 
+                                class="form-control" style="border-radius: 8px;" placeholder="Contoh: B/L No. 12345 / H 6789 SS">
                         </div>
                     </div>
-                </div>
 
+                    <div class="d-flex align-items-center mb-4 mt-5 pb-2 border-bottom">
+                        <div class="bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 36px; height: 36px;">
+                            <i class="icon-social-dropbox" style="font-size: 16px;"></i>
+                        </div>
+                        <h4 class="card-title text-dark font-weight-bold mb-0">Detail Barang</h4>
+                    </div>
+                    
+                    <div class="p-4 rounded mb-4 border-0 shadow-sm" style="background-color: #f8fafc;">
+                        <div class="form-group mb-3">
+                            <label for="item_id" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                Pilih Barang <span class="text-danger">*</span>
+                            </label>
+                            <select id="item_id" name="item_id" required class="form-control" style="border-radius: 8px;">
+                                <option value="">-- Pilih Master Barang --</option>
+                                @foreach($items as $item)
+                                    <option value="{{ $item->id }}" {{ old('item_id') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama }} (Satuan Dasar: {{ $item->base_unit }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-12 mb-3">
+                                <label for="conversion_id" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                    Satuan / Kemasan <span class="text-danger">*</span>
+                                </label>
+                                <select id="conversion_id" name="conversion_id" required class="form-control" style="border-radius: 8px;" disabled>
+                                    <option value="">-- Pilih Barang Terlebih Dahulu --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-12">
+                                <label for="qty" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                    Jumlah (Qty) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" id="qty" name="qty" value="{{ old('qty') }}" required min="1" step="0.01"
+                                    class="form-control" style="border-radius: 8px;" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div id="kalkulasi_info" class="alert d-none mt-3 mb-0 shadow-sm border-0 bg-info-light text-info" style="border-radius: 10px;">
+                            <div class="media align-items-start">
+                                <i class="icon-info mr-3 mt-1" style="font-size: 24px;"></i>
+                                <div class="media-body">
+                                    <span class="d-block mb-1" style="font-size: 12px; font-weight: 600; letter-spacing: 0.3px;">Total stok yang akan disimpan (Satuan Dasar):</span>
+                                    <h3 class="font-weight-bold text-info mb-0" style="font-size: 1.8rem;">
+                                        <span id="preview_total">0</span> 
+                                        <small class="font-weight-bold ml-1" id="preview_unit" style="font-size: 1rem;"></small>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="keterangan" class="text-dark font-weight-bold" style="font-size: 13px;">
+                            Keterangan Tambahan <span class="text-muted font-weight-normal" style="font-size: 11px;">(Opsional)</span>
+                        </label>
+                        <textarea id="keterangan" name="keterangan" rows="3" 
+                            class="form-control" style="border-radius: 8px;" placeholder="Tuliskan catatan tambahan jika ada..."></textarea>
+                    </div>
+
+                    <div class="border-top pt-4 mt-4 text-right">
+                        <a href="{{ route('inbounds.index') }}" class="btn btn-light px-4 mr-2 font-weight-bold text-muted shadow-sm" style="border-radius: 8px;">Batal</a>
+                        <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow-sm" style="border-radius: 8px;">
+                            <i class="icon-login mr-2"></i> Simpan Barang Masuk
+                        </button>
+                    </div>
+
+                </form>
             </div>
         </div>
-
-        <div>
-            <label for="keterangan" class="block text-sm font-medium text-gray-700 mb-1.5">
-                Keterangan Tambahan <span class="text-gray-400 font-normal">(Opsional)</span>
-            </label>
-            <textarea id="keterangan" name="keterangan" rows="3" 
-                class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors" 
-                placeholder="Tuliskan catatan tambahan jika ada..."></textarea>
-        </div>
-
-        <div class="pt-4 flex items-center justify-end space-x-3 border-t border-gray-100 pt-6">
-            <a href="{{ route('dashboard') }}" class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors focus:ring-4 focus:ring-gray-200 text-center">
-                Kembali
-            </a>
-            
-            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-300 flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                Simpan Barang Masuk
-            </button>
-        </div>
-
-    </form>
+    </div>
 </div>
 
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const itemsData = JSON.parse('{!! json_encode($items) !!}');
@@ -153,6 +154,7 @@
 
             // Reset options
             conversionSelect.innerHTML = '<option value="">-- Satuan Dasar --</option>';
+            // Aktifkan atau nonaktifkan select konversi
             conversionSelect.disabled = !selectedItem;
 
             if (selectedItem) {
@@ -190,8 +192,9 @@
             const qty = parseFloat(qtyInput.value) || 0;
             let multiplier = 1;
 
+            // Logika disesuaikan menggunakan d-none dari Bootstrap
             if (!selectedItemId || qty <= 0) {
-                infoBox.classList.add('hidden');
+                infoBox.classList.add('d-none');
                 return;
             }
 
@@ -205,8 +208,8 @@
             // Format angka agar rapi (misal: 1000 jadi 1.000)
             previewTotal.innerText = new Intl.NumberFormat('id-ID').format(total);
             
-            // Tampilkan kotak info
-            infoBox.classList.remove('hidden');
+            // Tampilkan kotak info dengan meremove d-none
+            infoBox.classList.remove('d-none');
         }
 
         // Pasang Event Listeners
@@ -220,4 +223,5 @@
         }
     });
 </script>
+@endpush
 @endsection

@@ -1,121 +1,169 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="h-100" lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistem Inventaris</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Login - InvSys Sistem Inventaris</title>
     
-    <!-- Memuat Tailwind CSS dan Font Inter -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
+    
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    
+    <style>
+        /* =========================================================
+           MODERN MINIMALIST OVERRIDES (SINKRON DENGAN APP.BLADE.PHP)
+           ========================================================= */
+        body {
+            background-color: #f4f7f6 !important;
+            color: #4a5568;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .card {
+            border: none !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 24px rgba(149, 157, 165, 0.08) !important;
+            background-color: #ffffff;
+        }
+        .btn {
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.3px;
+            border: none !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .btn-primary { 
+            background-color: #4f46e5 !important;
+            color: #fff !important;
+        }
+        .btn-primary:hover { 
+            background-color: #4338ca !important; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important; 
+            transform: translateY(-1px);
+        }
+        .form-control {
+            border-radius: 8px !important;
+            height: 45px;
+            box-shadow: none !important;
+        }
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.15) !important;
+        }
+        .bg-primary-light { 
+            background-color: #eef2ff !important; 
+            color: #4f46e5 !important; 
+        }
+        .input-group-text {
+            background-color: #f8fafc;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 flex flex-col justify-center items-center min-h-screen p-4 text-gray-800">
 
-    <div class="w-full max-w-md">
-        
-        <!-- Logo & Header Text -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl mb-4 shadow-sm">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900">Sistem Inventaris</h1>
-            <p class="text-sm text-gray-500 mt-1">Silakan masuk ke akun Anda untuk melanjutkan</p>
+<body class="h-100">
+    
+    <div id="preloader">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+            </svg>
         </div>
-
-        <!-- Card Form Login -->
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-            
-            <!-- Notifikasi Status (Misal: Password reset sukses) -->
-            @if (session('status'))
-                <div class="mb-6 p-4 bg-green-50 border border-green-200 text-sm text-green-700 rounded-lg flex items-center">
-                    <svg class="w-5 h-5 mr-3 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login.post') }}" class="space-y-5">
-                @csrf
-
-                <!-- Input Email -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        value="{{ old('email') }}"
-                        required 
-                        autofocus 
-                        autocomplete="username"
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors @error('email') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" 
-                        placeholder="admin@email.com"
-                    >
-                    @error('email')
-                        <p class="mt-1.5 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <!-- Input Password -->
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors">
-                                Lupa password?
-                            </a>
-                        @endif
-                    </div>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        required 
-                        autocomplete="current-password"
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors @error('password') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror" 
-                        placeholder="••••••••"
-                    >
-                    @error('password')
-                        <p class="mt-1.5 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <!-- Checkbox Remember Me -->
-                <div class="flex items-center pt-1">
-                    <input 
-                        type="checkbox" 
-                        id="remember_me" 
-                        name="remember" 
-                        class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-colors cursor-pointer"
-                    >
-                    <label for="remember_me" class="ml-2 block text-sm text-gray-600 cursor-pointer select-none">
-                        Ingat saya di perangkat ini
-                    </label>
-                </div>
-
-                <!-- Tombol Submit -->
-                <button 
-                    type="submit" 
-                    class="w-full bg-blue-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-100 mt-4"
-                >
-                    Masuk ke Dashboard
-                </button>
-            </form>
-        </div>
-
-        <!-- Footer -->
-        <p class="text-center text-sm text-gray-500 mt-8">
-            &copy; {{ date('Y') }} Sistem Inventaris Logistik.<br> BULOG
-        </p>
     </div>
 
+    <div class="login-form-bg h-100 d-flex align-items-center">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    
+                    <div class="card login-form mb-0">
+                        <div class="card-body pt-5 pb-5 px-4 px-md-5">
+                            
+                            <div class="text-center mb-4">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary-light rounded-circle mb-3" style="width: 70px; height: 70px;">
+                                    <i class="icon-layers" style="font-size: 30px;"></i>
+                                </div>
+                                <h3 class="font-weight-bold text-dark mb-1">InvSys</h3>
+                                <p class="text-muted">Sistem Inventaris Gudang Bulog</p>
+                            </div>
+
+                            @if (session('status'))
+                                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" style="border-radius: 10px;">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong><i class="icon-check mr-2"></i> Berhasil:</strong> {{ session('status') }}
+                                </div>
+                            @endif
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" style="border-radius: 10px;">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h6 class="text-danger font-weight-bold mb-2">
+                                        <i class="icon-info mr-2"></i> Terjadi kesalahan:
+                                    </h6>
+                                    <ul class="mb-0 pl-4 small">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <form class="mt-4 mb-3" action="{{ route('login.post') }}" method="POST">
+                                @csrf
+                                
+                                <div class="form-group mb-4">
+                                    <label class="font-weight-bold text-dark" style="font-size: 13px;">Alamat Email</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border-right-0" style="border-radius: 8px 0 0 8px;">
+                                                <i class="icon-envelope text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <input type="email" name="email" class="form-control border-left-0 pl-1" style="border-radius: 0 8px 8px 0;" placeholder="admin@bulog.co.id" value="{{ old('email') }}" required autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label class="font-weight-bold text-dark mb-0" style="font-size: 13px;">Password</label>
+                                        @if (Route::has('password.request'))
+                                            <a href="{{ route('password.request') }}" class="text-primary small font-weight-bold" style="text-decoration: none;">Lupa Password?</a>
+                                        @endif
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border-right-0" style="border-radius: 8px 0 0 8px;">
+                                                <i class="icon-lock text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <input type="password" name="password" class="form-control border-left-0 pl-1" style="border-radius: 0 8px 8px 0;" placeholder="••••••••" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-check mb-4 mt-2">
+                                    <input type="checkbox" class="form-check-input" id="remember_me" name="remember" style="cursor: pointer; margin-top: 0.25rem;">
+                                    <label class="form-check-label text-muted small" for="remember_me" style="cursor: pointer;">Ingat saya di perangkat ini</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block py-2 mt-4 shadow-sm" style="font-size: 15px;">
+                                    <i class="icon-login mr-2"></i> Masuk ke Dashboard
+                                </button>
+                            </form>
+                            
+                            <div class="text-center mt-5 pt-4 border-top">
+                                <p class="text-muted small mb-0">&copy; {{ date('Y') }} Sistem Inventaris Logistik<br>Gudang BULOG</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('plugins/common/common.min.js') }}"></script>
+    <script src="{{ asset('js/custom.min.js') }}"></script>
+    <script src="{{ asset('js/settings.js') }}"></script>
+    <script src="{{ asset('js/gleek.js') }}"></script>
 </body>
 </html>

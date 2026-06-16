@@ -3,114 +3,113 @@
 @section('title', 'Tambah Master Barang - Sistem Inventaris')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="text-2xl font-semibold text-gray-900">Tambah Master Barang</h1>
-    <p class="text-sm text-gray-500 mt-1">Masukkan informasi detail mengenai barang baru beserta aturan konversi kemasannya.</p>
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="font-weight-bold text-dark mb-1">Tambah Master Barang</h2>
+        <p class="text-muted mb-0">Masukkan informasi detail mengenai barang baru beserta aturan konversi kemasannya.</p>
+    </div>
 </div>
 
-<div class="max-w-4xl bg-white p-6 md:p-8 rounded-xl border border-gray-100 shadow-sm">
-    
-    <form action="{{ route('items.store') }}" method="POST" class="space-y-8">
-        @csrf
-        
-        @if(session('success'))
-            <div class="bg-green-50 text-green-700 p-4 rounded-lg flex items-center border border-green-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                {{ session('success') }}
-            </div>
-        @endif
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                
+                <form action="{{ route('items.store') }}" method="POST">
+                    @csrf
+                    
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" style="border-radius: 10px;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h6 class="text-danger font-weight-bold mb-2">
+                                <i class="icon-info mr-2"></i> Terjadi kesalahan input:
+                            </h6>
+                            <ul class="mb-0 pl-4 small">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-        @if ($errors->any())
-            <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200">
-                <div class="flex items-center mb-2">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span class="font-semibold">Terjadi kesalahan input:</span>
-                </div>
-                <ul class="list-disc pl-7 text-sm space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+                    <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                        <div class="bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 36px; height: 36px;">
+                            <i class="icon-grid" style="font-size: 16px;"></i>
+                        </div>
+                        <h4 class="card-title text-dark font-weight-bold mb-0">Data Barang Utama</h4>
+                    </div>
+                    
+                    <div class="form-row mb-4">
+                        <div class="form-group col-12 mb-3">
+                            <label for="nama" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                Nama Barang <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" id="nama" name="nama" value="{{ old('nama') }}" required 
+                                class="form-control" style="border-radius: 8px;" placeholder="Contoh: Daging Sapi Tenderloin">
+                        </div>
 
-        <div>
-            <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2 mb-5">Data Barang Utama</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="nama" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Nama Barang <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="nama" name="nama" value="{{ old('nama') }}" required 
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors" 
-                        placeholder="Contoh: Beras Premium">
-                </div>
+                        <div class="form-group col-12">
+                            <label for="base_unit" class="text-dark font-weight-bold" style="font-size: 13px;">
+                                Satuan Dasar (Base Unit) <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" id="base_unit" name="base_unit" value="{{ old('base_unit') }}" required 
+                                class="form-control" style="border-radius: 8px;" placeholder="Contoh: KG">
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="base_unit" class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Satuan Dasar (Base Unit) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="base_unit" name="base_unit" value="{{ old('base_unit') }}" required 
-                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors" 
-                        placeholder="Contoh: Kg">
-                </div>
+                    <div class="d-flex align-items-center mb-2 mt-5 pb-2 border-bottom">
+                        <div class="bg-warning-light text-warning rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 36px; height: 36px;">
+                            <i class="icon-layers" style="font-size: 16px;"></i>
+                        </div>
+                        <div>
+                            <h4 class="card-title text-dark font-weight-bold mb-0">Aturan Kemasan</h4>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-4" style="font-size: 13px;">Tentukan satuan yang lebih besar beserta isi di dalamnya (multiplier) terhadap satuan dasar. <span class="font-italic text-info">(Opsional)</span></p>
+
+                    <div class="p-4 rounded mb-3 border-0 shadow-sm" style="background-color: #f8fafc;">
+                        <div class="form-row">
+                            <div class="form-group col-12 mb-3">
+                                <label class="text-uppercase text-muted font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Nama Kemasan 1</label>
+                                <input type="text" name="konversi[0][nama_kemasan]" value="{{ old('konversi.0.nama_kemasan') }}"
+                                    class="form-control" style="border-radius: 8px;" placeholder="Contoh: Karton">
+                            </div>
+                            <div class="form-group col-12 mb-0">
+                                <label class="text-uppercase text-muted font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Isi (Multiplier)</label>
+                                <input type="number" name="konversi[0][multiplier]" value="{{ old('konversi.0.multiplier') }}"
+                                    class="form-control" style="border-radius: 8px;" placeholder="Contoh: 20">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded mb-4 border-0 shadow-sm" style="background-color: #f8fafc;">
+                        <div class="form-row">
+                            <div class="form-group col-12 mb-3">
+                                <label class="text-uppercase text-muted font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Nama Kemasan 2</label>
+                                <input type="text" name="konversi[1][nama_kemasan]" value="{{ old('konversi.1.nama_kemasan') }}"
+                                    class="form-control" style="border-radius: 8px;" placeholder="Contoh: Box">
+                            </div>
+                            <div class="form-group col-12 mb-0">
+                                <label class="text-uppercase text-muted font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Isi (Multiplier)</label>
+                                <input type="number" name="konversi[1][multiplier]" value="{{ old('konversi.1.multiplier') }}"
+                                    class="form-control" style="border-radius: 8px;" placeholder="Contoh: 5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-top pt-4 text-right">
+                        <a href="{{ route('items.index') }}" class="btn btn-light px-4 mr-2 font-weight-bold text-muted shadow-sm" style="border-radius: 8px;">Kembali</a>
+                        <button type="reset" class="btn btn-outline-secondary px-4 mr-2 font-weight-bold shadow-sm" style="border-radius: 8px;">Reset</button>
+                        <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow-sm" style="border-radius: 8px;">
+                            <i class="icon-check mr-2"></i> Simpan Barang
+                        </button>
+                    </div>
+
+                </form>
             </div>
         </div>
-
-        <div>
-            <div class="mb-5">
-                <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Aturan Kemasan (Opsional)</h3>
-                <p class="text-sm text-gray-500 mt-1">Tentukan satuan yang lebih besar beserta isi di dalamnya (multiplier) terhadap satuan dasar.</p>
-            </div>
-
-            <div class="space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5 bg-gray-50 rounded-xl border border-gray-200">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama Kemasan 1</label>
-                        <input type="text" name="konversi[0][nama_kemasan]" value="{{ old('konversi.0.nama_kemasan') }}"
-                            class="w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white" 
-                            placeholder="Contoh: Karung 50kg">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Isi (Multiplier)</label>
-                        <input type="number" name="konversi[0][multiplier]" value="{{ old('konversi.0.multiplier') }}"
-                            class="w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white" 
-                            placeholder="Contoh: 50">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5 bg-gray-50 rounded-xl border border-gray-200">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama Kemasan 2</label>
-                        <input type="text" name="konversi[1][nama_kemasan]" value="{{ old('konversi.1.nama_kemasan') }}"
-                            class="w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white" 
-                            placeholder="Contoh: Karung 25kg">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Isi (Multiplier)</label>
-                        <input type="number" name="konversi[1][multiplier]" value="{{ old('konversi.1.multiplier') }}"
-                            class="w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-2.5 outline-none transition-colors bg-white" 
-                            placeholder="Contoh: 25">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="pt-4 flex items-center justify-end space-x-3 border-t border-gray-100 pt-6">
-            <a href="{{ route('items.index') }}" class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors focus:ring-4 focus:ring-gray-200 text-center">
-                Kembali
-            </a>
-            
-            <button type="reset" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors focus:ring-4 focus:ring-gray-100">
-                Reset
-            </button>
-            
-            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-300">
-                Simpan Barang
-            </button>
-        </div>
-
-    </form>
+    </div>
 </div>
 @endsection
